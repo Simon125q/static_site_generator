@@ -1,15 +1,15 @@
 import unittest
-from textnode import TextNode
+from textnode import TextNode, TextType
 from main import text_node_to_html_node
 
 class TestConvertsions(unittest.TestCase):
     def test_text_to_html(self) -> None:
-        node1 = TextNode("This is a text node", "text")
-        node2 = TextNode("This is a text node", "bold")
-        node3 = TextNode("This is a text node", "italic")
-        node4 = TextNode("This is a text node", "code")
-        node5 = TextNode("This is a text node", "link", "https://test.com")
-        node6 = TextNode("This is a text node", "image", "https://test.com")
+        node1 = TextNode("This is a text node", TextType.text)
+        node2 = TextNode("This is a text node", TextType.bold)
+        node3 = TextNode("This is a text node", TextType.italic)
+        node4 = TextNode("This is a text node", TextType.code)
+        node5 = TextNode("This is a text node", TextType.link, "https://test.com")
+        node6 = TextNode("This is a text node", TextType.image, "https://test.com")
         node7 = TextNode("This is a text node", "error", "https://test.com")
         exp1 = "This is a text node"
         exp2 = "<b>This is a text node</b>"
