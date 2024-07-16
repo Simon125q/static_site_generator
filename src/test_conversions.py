@@ -1,5 +1,5 @@
 import unittest
-from conversions import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
+from conversions import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
 from textnode import TextType, TextNode
 
 class TestConversions(unittest.TestCase):
@@ -88,9 +88,115 @@ class TestConversions(unittest.TestCase):
         text2 = "This is text with a link [to boot dev](https://www.boot.dev) and thisis img ![youtube](https://www.youtube.com/img)"
         result2 = [("to boot dev", "https://www.boot.dev")]
         self.assertEqual(extract_markdown_links(text2), result2)
+        text3 = "[to boot dev](https://www.boot.dev)"
+        result3 = [("to boot dev", "https://www.boot.dev")]
+        self.assertEqual(extract_markdown_links(text3), result3)
+        text4 = "dev](https://www.boot.dev)"
+        result4 = []
+        self.assertEqual(extract_markdown_links(text4), result4)
 
+    def test_split_nodes_image(self) -> None:
+        node1 = TextNode(
+            "This is text with a image ![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.text,
+        )
+        node2 = TextNode(
+            "![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.text,
+        )
+        node3 = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.text,
+        )
+        node4 = TextNode(
+            "![to boot dev](https://www.boot.dev)",
+            TextType.text,
+        )
+        result1 = split_nodes_image([node1])
+        expected1 = [
+            TextNode("This is text with a image ", TextType.text),
+            TextNode("to boot dev", TextType.image, "https://www.boot.dev"),
+            TextNode(" and ", TextType.text),
+            TextNode(
+                "to youtube", TextType.image, "https://www.youtube.com/@bootdotdev"
+            ),
+        ]
+        self.assertEqual(result1, expected1)
 
+        result2 = split_nodes_image([node1, node2, node3, node4])
+        expected2 = [
+            TextNode("This is text with a image ", TextType.text),
+            TextNode("to boot dev", TextType.image, "https://www.boot.dev"),
+            TextNode(" and ", TextType.text),
+            TextNode(
+                "to youtube", TextType.image, "https://www.youtube.com/@bootdotdev"
+            ),
+            TextNode("to boot dev", TextType.image, "https://www.boot.dev"),
+            TextNode(" and ", TextType.text),
+            TextNode(
+                "to youtube", TextType.image, "https://www.youtube.com/@bootdotdev"
+            ),
+            TextNode(
+                "This is text with a link [to boot dev](https://www.boot.dev) and ",
+                     TextType.text
+            ),
+            TextNode(
+                "to youtube", TextType.image, "https://www.youtube.com/@bootdotdev"
+            ),
+            TextNode("to boot dev", TextType.image, "https://www.boot.dev")
+        ]
+        self.assertEqual(result2, expected2)
 
+    def test_split_nodes_link(self) -> None:
+        node1 = TextNode(
+            "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.text,
+        )
+        node2 = TextNode(
+            "[to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.text,
+        )
+        node3 = TextNode(
+            "This is text with a image ![to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+            TextType.text,
+        )
+        node4 = TextNode(
+            "[to boot dev](https://www.boot.dev)",
+            TextType.text,
+        )
+        result1 = split_nodes_link([node1])
+        expected1 = [
+            TextNode("This is text with a link ", TextType.text),
+            TextNode("to boot dev", TextType.link, "https://www.boot.dev"),
+            TextNode(" and ", TextType.text),
+            TextNode(
+                "to youtube", TextType.link, "https://www.youtube.com/@bootdotdev"
+            ),
+        ]
+        self.assertEqual(result1, expected1)
+
+        result2 = split_nodes_link([node1, node2, node3, node4])
+        expected2 = [
+            TextNode("This is text with a link ", TextType.text),
+            TextNode("to boot dev", TextType.link, "https://www.boot.dev"),
+            TextNode(" and ", TextType.text),
+            TextNode(
+                "to youtube", TextType.link, "https://www.youtube.com/@bootdotdev"
+            ),
+            TextNode("to boot dev", TextType.link, "https://www.boot.dev"),
+            TextNode(" and ", TextType.text),
+            TextNode(
+                "to youtube", TextType.link, "https://www.youtube.com/@bootdotdev"),
+            TextNode(
+                "This is text with a image ![to boot dev](https://www.boot.dev) and ",
+                     TextType.text
+            ),
+            TextNode(
+                "to youtube", TextType.link, "https://www.youtube.com/@bootdotdev"
+            ),
+            TextNode("to boot dev", TextType.link, "https://www.boot.dev")
+        ]
+        self.assertEqual(result2, expected2)
 
 
         
