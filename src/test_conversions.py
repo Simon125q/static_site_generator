@@ -1,5 +1,5 @@
 import unittest
-from conversions import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
+from conversions import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
 from textnode import TextType, TextNode
 
 class TestConversions(unittest.TestCase):
@@ -198,5 +198,21 @@ class TestConversions(unittest.TestCase):
         ]
         self.assertEqual(result2, expected2)
 
+    def test_text_to_textnodes(self) -> None:
+        input1 = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png) and a [link](https://boot.dev)"
+        result1 = text_to_textnodes(input1)
+        expected1 = [
+                TextNode("This is ", TextType.text),
+                TextNode("text", TextType.bold),
+                TextNode(" with an ", TextType.text),
+                TextNode("italic", TextType.italic),
+                TextNode(" word and a ", TextType.text),
+                TextNode("code block", TextType.code),
+                TextNode(" and an ", TextType.text),
+                TextNode("obi wan image", TextType.image, "https://storage.googleapis.com/qvault-webapp-dynamic-assets/course_assets/zjjcJKZ.png"),
+                TextNode(" and a ", TextType.text),
+                TextNode("link", TextType.link, "https://boot.dev"),
+            ]
+        self.assertEqual(result1, expected1)
 
         
