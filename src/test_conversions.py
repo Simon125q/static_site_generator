@@ -1,5 +1,5 @@
 import unittest
-from conversions import split_nodes_delimiter
+from conversions import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 from textnode import TextType, TextNode
 
 class TestConversions(unittest.TestCase):
@@ -73,7 +73,21 @@ class TestConversions(unittest.TestCase):
                           "`", TextType.code),
                           [self.node1] + self.res2 + [self.node3] + [self.node4] + self.res5)
 
+    def test_extract_markdown_imgs(self) -> None:
+        text1 = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        result1 = [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")]
+        self.assertEqual(extract_markdown_images(text1), result1)
+        text2 = "This is text without any images"
+        result2 = []
+        self.assertEqual(extract_markdown_images(text2), result2)
 
+    def test_extract_markdown_urls(self) -> None:
+        text1 = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        result1 = [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")]
+        self.assertEqual(extract_markdown_links(text1), result1)
+        text2 = "This is text with a link [to boot dev](https://www.boot.dev) and thisis img ![youtube](https://www.youtube.com/img)"
+        result2 = [("to boot dev", "https://www.boot.dev")]
+        self.assertEqual(extract_markdown_links(text2), result2)
 
 
 
