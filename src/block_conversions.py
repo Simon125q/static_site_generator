@@ -1,4 +1,5 @@
 from enum import Enum
+import re
 
 class BlockType(Enum):
     paragraph = "paragraph"
@@ -24,11 +25,18 @@ def markdown_to_blocks(text: str) -> list[str]:
     return blocks
 
 def get_block_type(block: str) -> BlockType:
-    if block[:2] == "# ":
+    if set(block.split(" ")[0]) == set("#") and len(block.split(" ")[0]) <= 6:
         return BlockType.heading
     elif block[:3] == "```" and block[-3:] == "```":
         return BlockType.code
     lines = block.split("\n")
+    if lines[0][0] == ">":
+        is_quote = True
+        for line in lines:
+            if line[0] != ">":
+                is_quote= False
+        if is_quote:
+            return BlockType.quote
     if lines[0][:2] in ["* ", "- "]:
         is_un_list = True
         for line in lines:
