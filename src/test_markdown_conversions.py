@@ -65,7 +65,7 @@ class TestMarkdownConversions(unittest.TestCase):
                                         LeafNode(None, value=" and "),
                                         LeafNode("i", value="italic"),
                                         LeafNode(None, value=" words inside of it and "),
-                                        LeafNode("img", value="img name", props={"src": "https//test_img_link.com"})
+                                        LeafNode("img", value="", props={"src": "https//test_img_link.com", "alt": "img name"})
                                     ]),
                                 ParentNode("ol", children=[
                                         ParentNode("li", children=[

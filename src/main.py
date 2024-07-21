@@ -1,30 +1,26 @@
-from textnode import TextNode, TextType
-from htmlnode import HTMLNode
-from leafnode import LeafNode
+import os
+import shutil
+
+def copy_and_override_directory(path_from: str, path_to: str) -> None:
+    if os.path.isdir(path_to):
+        shutil.rmtree(path_to)
+    copy_directory(path_from, path_to)
 
 
-def text_node_to_html_node(text_node: TextNode) -> HTMLNode:
-    match text_node.text_type:
-        case TextType.text:
-            return LeafNode(tag=None, value=text_node.text, props=None)
-        case TextType.bold:
-            return LeafNode(tag="b", value=text_node.text, props=None)
-        case TextType.italic:
-            return LeafNode(tag="i", value=text_node.text, props=None)
-        case TextType.code:
-            return LeafNode(tag="code", value=text_node.text, props=None)
-        case TextType.link:
-            return LeafNode(tag="a", value=text_node.text, props={"href":text_node.url})
-        case TextType.image:
-            return LeafNode(tag="img", value="", props={"src":text_node.url, "alt":text_node.text})
-        case _:
-            raise Exception("Unknown text type")
-
-            
+def copy_directory(path_from: str, path_to: str) -> None:
+    input_dir = os.listdir(path_from)
+    if not os.path.isdir(path_to):
+        os.mkdir(path_to)
+    for dir in input_dir:
+        path_in = os.path.join(path_from, dir)
+        path_out = os.path.join(path_to, dir)
+        if os.path.isfile(path_in):
+            shutil.copy(path_in, path_out)
+        else:
+            copy_directory(path_in, path_out)
 
 def main() -> None:
-    test = TextNode("new text node", "bold", "http://www.boot.dev")
-    print(test)
+    copy_and_override_directory("./static", "./public")
 
 if __name__ == "__main__":
     main()

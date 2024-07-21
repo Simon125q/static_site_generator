@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from main import text_node_to_html_node
+from markdown_conversions import text_node_to_html_node
 
 class TestConvertsions(unittest.TestCase):
     def test_text_to_html(self) -> None:
@@ -10,7 +10,7 @@ class TestConvertsions(unittest.TestCase):
         node4 = TextNode("This is a text node", TextType.code)
         node5 = TextNode("This is a text node", TextType.link, "https://test.com")
         node6 = TextNode("This is a text node", TextType.image, "https://test.com")
-        node7 = TextNode("This is a text node", "error", "https://test.com")
+        node7 = TextNode("This is a text node", "eerror", "https://test.com")
         exp1 = "This is a text node"
         exp2 = "<b>This is a text node</b>"
         exp3 = "<i>This is a text node</i>"
