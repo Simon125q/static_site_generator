@@ -1,6 +1,8 @@
 import os
 import shutil
 
+from page_generator import generate_page
+
 def copy_and_override_directory(path_from: str, path_to: str) -> None:
     if os.path.isdir(path_to):
         shutil.rmtree(path_to)
@@ -21,6 +23,7 @@ def copy_directory(path_from: str, path_to: str) -> None:
 
 def main() -> None:
     copy_and_override_directory("./static", "./public")
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 if __name__ == "__main__":
     main()

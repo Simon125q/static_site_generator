@@ -10,7 +10,7 @@ def markdown_to_html_node(markdown: str) -> HTMLNode:
     children = []
     for block in blocks:
         children.append(block_to_child_node(block))
-    return HTMLNode("div", None, children=children)
+    return ParentNode("div", children=children)
 
 def block_to_child_node(block: str) -> ParentNode | LeafNode:
     def _block_to_node(block: str, tag: str) -> ParentNode | LeafNode:
@@ -34,7 +34,7 @@ def block_to_child_node(block: str) -> ParentNode | LeafNode:
             lines = block.split("\n")
             clean_lines = []
             for line in lines:
-                clean_lines.append(line.lstrip(">"))
+                clean_lines.append(line.lstrip(">").strip())
             return _block_to_node("\n".join(clean_lines), "blockquote")
         case BlockType.unordered_list:
             list_points = []
