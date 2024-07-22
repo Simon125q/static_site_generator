@@ -43,7 +43,7 @@ class TestMarkdownConversions(unittest.TestCase):
                                         LeafNode("a", value="link_name", props={"href": "https//test_link.com"}),
                                         LeafNode(None, value=".")
                                     ]),
-                                LeafNode("blockquote", value=" This is the first quote in a quote block\nThis is a quote item\n This is another quote item")
+                                LeafNode("blockquote", value="This is the first quote in a quote block\nThis is a quote item\nThis is another quote item")
                              ])
         self.assertEqual(str(result2), str(expected2))
 

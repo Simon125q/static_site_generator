@@ -1,4 +1,5 @@
 import os
+from re import template
 from block_conversions import BlockType, get_block_type, markdown_to_blocks
 from markdown_conversions import markdown_to_html_node
 
@@ -21,9 +22,20 @@ def generate_page(from_path: str, template_path: str, dest_path: str) -> None:
     title = extract_title(markdown)
     html_result = template.replace("{{ Title }}", title).replace("{{ Content }}", html_repr)
     if not os.path.isdir("/".join(dest_path.split("/")[:-1])):
-        os.makedirs(dest_path)
+        os.makedirs("/".join(dest_path.split("/")[:-1]))
     result_file = open(dest_path, 'w')
     result_file.write(html_result)
     result_file.close()
+
+def generate_pages_recursive(dir_path_content: str, template_path: str, dest_dir_path: str) -> None:
+    dir_list = os.listdir(dir_path_content) 
+    for dir in dir_list:
+        path_in = os.path.join(dir_path_content, dir)
+        path_out = os.path.join(dest_dir_path, dir)
+        if os.path.isfile(path_in):
+            if dir.split(".")[-1] == "md":
+                generate_page(path_in, template_path, path_out.replace(".md", ".html"))
+        else:
+            generate_pages_recursive(path_in, template_path, path_out)
 
 

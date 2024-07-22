@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from page_generator import generate_page
+from page_generator import generate_pages_recursive
 
 def copy_and_override_directory(path_from: str, path_to: str) -> None:
     if os.path.isdir(path_to):
@@ -23,7 +23,7 @@ def copy_directory(path_from: str, path_to: str) -> None:
 
 def main() -> None:
     copy_and_override_directory("./static", "./public")
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
 
 if __name__ == "__main__":
     main()

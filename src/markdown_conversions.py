@@ -15,10 +15,10 @@ def markdown_to_html_node(markdown: str) -> HTMLNode:
 def block_to_child_node(block: str) -> ParentNode | LeafNode:
     def _block_to_node(block: str, tag: str) -> ParentNode | LeafNode:
             text_nodes = text_to_textnodes(block)
-            if len(text_nodes) == 1:
+            children = text_nodes_to_children(text_nodes)
+            if len(text_nodes) == 1 and children[0].tag == None:
                 return LeafNode(tag, block)
             else:
-                children = text_nodes_to_children(text_nodes) 
                 return ParentNode(tag, children)
 
     block_type = get_block_type(block)
